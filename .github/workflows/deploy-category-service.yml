@@ -1,0 +1,73 @@
+name: Deploy Category Service
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.cs'
+      - '**/*.csproj'
+      - 'appsettings*.json'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  ARTIFACT_NAME: 'category-service-drop'
+  WEBAPP_NAME: 'WAPPCUSAPPD0360' # Recuerda que este nombre debe coincidir con el que se creó en Azure
+
+jobs:
+  # ==========================================
+  # JOB 1: COMPILAR Y EMPAQUETAR
+  # ==========================================
+  build:
+    name: Build & Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore and Publish
+        run: dotnet publish ./CategoryService.csproj --configuration Release --output ./publish
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ./publish/
+          retention-days: 1 
+
+  # ==========================================
+  # JOB 2: DESPLEGAR A AZURE
+  # ==========================================
+  deploy:
+    name: Deploy to Web App
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ./publish
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.WEBAPP_NAME }}
+          package: ./publish
