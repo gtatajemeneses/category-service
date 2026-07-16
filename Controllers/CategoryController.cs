@@ -18,6 +18,7 @@ public class CategoryController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
+        Console.WriteLine("Ejecutando el endpoint");
         var categories = await _repository.GetAllAsync();
         return Ok(categories);
     }
