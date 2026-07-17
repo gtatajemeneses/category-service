@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "WR4z0GDDiWI=",
+  "dgSpecHash": "Uk8p2k9UdO0=",
   "success": true,
-  "projectFilePath": "/Users/gerardo/Desktop/CategoryService/CategoryService/CategoryService.csproj",
+  "projectFilePath": "/Users/gerardo/Desktop/category-service/CategoryService.csproj",
   "expectedPackageFiles": [
     "/Users/gerardo/.nuget/packages/azure.core/1.19.0/azure.core.1.19.0.nupkg.sha512",
     "/Users/gerardo/.nuget/packages/microsoft.aspnetcore.openapi/8.0.15/microsoft.aspnetcore.openapi.8.0.15.nupkg.sha512",
