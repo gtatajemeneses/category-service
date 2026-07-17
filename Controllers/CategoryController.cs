@@ -1,6 +1,8 @@
 using CategoryService.Entities;
 using CategoryService.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace CategoryService.Controllers;
 
@@ -19,6 +21,11 @@ public class CategoryController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         Console.WriteLine("Ejecutando el endpoint");
+        using (MD5 md5 = MD5.Create())
+        {
+            byte[] inputBytes = Encoding.ASCII.GetBytes("datos_sensibles");
+            byte[] hashBytes = md5.ComputeHash(inputBytes);
+        }
         var categories = await _repository.GetAllAsync();
         return Ok(categories);
     }
