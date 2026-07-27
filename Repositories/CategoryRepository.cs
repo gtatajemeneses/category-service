@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CategoryService.Repositories;
 
-public class CategoryRepository:ICategoryRepository
+public class CategoryRepository : ICategoryRepository
 {
     private readonly ApplicationDbContext _context;
 
@@ -25,6 +25,15 @@ public class CategoryRepository:ICategoryRepository
                              .WithPartitionKey(id)
                              .FirstOrDefaultAsync(c => c.Id == id);
     }
+
+    public async Task<Category?> GetByCodeAsync(string code)
+    {
+        return await _context.Categories
+
+                             .FirstOrDefaultAsync(c => c.CategoryCode == code);
+    }
+
+
 
      public async Task<Category?> GetByNameAsync(string name)
     {
@@ -51,7 +60,7 @@ public class CategoryRepository:ICategoryRepository
 
         _context.Categories.Update(existingCategory);
         await _context.SaveChangesAsync();
-        
+
         return existingCategory;
     }
 
